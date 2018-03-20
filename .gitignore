@@ -4,3 +4,7 @@
 
 # build
 target
+
+# run
+*.log
+tcc-*/

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.yhs0092.csedemo.dataconsistency.shop.purchase.dao.PurchaseMapper">
+
+  <resultMap id="purchaseInfo" type="com.github.yhs0092.csedemo.dataconsistency.shop.common.api.Purchase">
+    <result column="ID" jdbcType="BIGINT" property="id"/>
+    <result column="ACCOUNT_ID" jdbcType="BIGINT" property="accountId"/>
+    <result column="GOODS_ID" jdbcType="BIGINT" property="goodsId"/>
+    <result column="TOTAL_PRICE" jdbcType="BIGINT" property="totalPrice"/>
+    <result column="QUANTITY" jdbcType="INTEGER" property="quantity"/>
+    <result column="PURCHASE_TYPE" jdbcType="CHAR" property="purchaseType"/>
+    <result column="STATUS" jdbcType="CHAR" property="status"/>
+  </resultMap>
+
+  <sql id="all_column">
+    ID, ACCOUNT_ID, GOODS_ID, TOTAL_PRICE, QUANTITY, PURCHASE_TYPE, STATUS
+  </sql>
+
+  <select id="getById" parameterType="java.lang.Long" resultMap="purchaseInfo">
+    select
+    <include refid="all_column"/>
+    from
+    T_PURCHASE
+    where
+    ID = #{id}
+    <!--for update-->
+  </select>
+
+  <update id="update" parameterType="com.github.yhs0092.csedemo.dataconsistency.shop.common.api.Purchase">
+    update
+    T_PURCHASE
+    <trim prefix="set" suffixOverrides=",">
+      <if test="null != totalPrice">
+        TOTAL_PRICE = #{totalPrice},
+      </if>
+      <if test="null != quantity">
+        QUANTITY = #{quantity},
+      </if>
+      <if test="null != status">
+        STATUS = #{status},
+      </if>
+    </trim>
+    where
+    id = #{id}
+  </update>
+
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id"
+    parameterType="com.github.yhs0092.csedemo.dataconsistency.shop.common.api.Purchase">
+    insert into
+    T_PURCHASE(ACCOUNT_ID, GOODS_ID, TOTAL_PRICE, QUANTITY, PURCHASE_TYPE, STATUS)
+    values
+    (#{accountId}, #{goodsId}, #{totalPrice}, #{quantity}, #{purchaseType}, #{status})
+  </insert>
+</mapper>

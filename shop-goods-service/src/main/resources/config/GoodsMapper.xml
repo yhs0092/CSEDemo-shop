@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.yhs0092.csedemo.dataconsistency.shop.goods.dao.GoodsMapper">
+
+  <resultMap id="goodsInfo" type="com.github.yhs0092.csedemo.dataconsistency.shop.common.api.Goods">
+    <result column="ID" jdbcType="BIGINT" property="id"/>
+    <result column="PRICE" jdbcType="BIGINT" property="price"/>
+    <result column="REMAINING" jdbcType="INTEGER" property="remaining"/>
+  </resultMap>
+
+  <sql id="all_column">
+    ID, PRICE, REMAINING
+  </sql>
+
+  <select id="getById" parameterType="java.lang.Long" resultMap="goodsInfo">
+    select
+    <include refid="all_column"/>
+    from
+    T_GOODS
+    where
+    ID = #{id}
+    <!--for update-->
+  </select>
+
+  <update id="update" parameterType="com.github.yhs0092.csedemo.dataconsistency.shop.common.api.Goods">
+    update
+    T_GOODS
+    <trim prefix="set" suffixOverrides=",">
+      <if test="null != price">
+        PRICE = #{price},
+      </if>
+      <if test="null != remaining">
+        REMAINING = #{remaining},
+      </if>
+    </trim>
+    where
+    id = #{id}
+  </update>
+</mapper>
